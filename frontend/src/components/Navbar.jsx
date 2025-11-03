@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Login from "./Login";
 import { Link } from "react-router-dom";
+import { logout } from "../redux/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 
 function Navbar() {
+
+   const handleLogout = () => {
+     dispatch(logout());
+     window.location.reload()
+     toast.success("Logout successful!");
+   };
+
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const [sticky, setSticky] = useState(false);
 
@@ -20,6 +32,7 @@ function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   const NavItems = (
     <>
       <li>
@@ -90,14 +103,14 @@ function Navbar() {
                   placeholder="Search"
                 />
                 <svg
-                  className="h-[1em] opacity-50"
+                  className="h-[1em] opacity-60 cursor-pointer"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                 >
                   <g
                     strokeLinejoin="round"
                     strokeLinecap="round"
-                    strokeWidth="2.5"
+                    strokeWidth="3.5"
                     fill="none"
                     stroke="currentColor"
                   >
@@ -110,7 +123,11 @@ function Navbar() {
             <div>
               <label className="swap swap-rotate">
                 {/* <!-- this hidden checkbox controls the state --> */}
-                <input type="checkbox" className="theme-controller" value="dark" />
+                <input
+                  type="checkbox"
+                  className="theme-controller"
+                  value="dark"
+                />
 
                 {/* <!-- sun icon --> */}
                 <svg
@@ -132,12 +149,25 @@ function Navbar() {
               </label>
             </div>
             <div className="">
-              <button
-                className="btn btn-secondary text-white "
-                onClick={() => document.getElementById("my_modal_3").showModal()}
-              >
-                Login
-              </button>
+              {user ? (
+                <>
+                  <button
+                    className="btn btn-secondary bg-red-500 text-white"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  className="btn btn-secondary text-white "
+                  onClick={() =>
+                    document.getElementById("my_modal_3").showModal()
+                  }
+                >
+                  Login
+                </button>
+              )}
               <Login />
             </div>
           </div>
